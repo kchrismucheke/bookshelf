@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Bookshelf
 
 Welcome to your new Hanami project!
@@ -31,3 +32,7 @@ How to prepare (create and migrate) DB for `development` and `test` environments
 ```
 
 Explore Hanami [guides](http://hanamirb.org/guides/), [API docs](http://docs.hanamirb.org/1.2.0/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
+=======
+# bookshelf
+#100DaysofCode Challenge
+>>>>>>> 37f38ed5f8de15018250177c66935e7c5f8d9973
