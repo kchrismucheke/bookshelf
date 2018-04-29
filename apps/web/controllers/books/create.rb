@@ -11,9 +11,14 @@ module Web::Controllers::Books
       end 
     end 
 
+    def initialize(interactor: AddBook.new)
+      @interactor = interactor
+    end
+
     def call(params)
       if params.valid?
-        @book = BookRepository.new.create(params[:book])
+        #@book = BookRepository.new.create(params[:book])
+        @book = AddBook.new.call(params[:book])
 
         redirect_to routes.books_path
       else

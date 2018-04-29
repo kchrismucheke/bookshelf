@@ -1,46 +1,43 @@
-require_relative '../../../spec_helper'
+require 'spec_helper'
 
-describe Web::Controllers::Books::Create do
-  let(:action) { Web::Controllers::Books::Create.new }
-  let(:repository) { BookRepository.new }
-
-  before do
-    repository.clear
-  end
+RSpec.describe Web::Controllers::Books::Create do
+  let(:interactor) { instance_double('AddBook', call: nil) }
+  let(:action) { Web::Controllers::Books::Create.new(interactor: interactor) }
 
   describe 'with valid params' do
-    let(:params) { Hash[book: { title: 'Confident Ruby', author: 'Avdi Grimm' }] }
+    let(:params) { Hash[book: { title: '1984', author: 'George Orwell' }] }
 
-    it 'creates a book' do
-      action.call(params)
-      book = repository.last
-
-      book.id.wont_be_nil
-      book.title.must_equal params.dig(:book, :title)
+    it 'calls interactor' do
+      expect(interactor).to receive(:call)
+      response = action.call(params)
     end
 
     it 'redirects the user to the books listing' do
       response = action.call(params)
 
-      response[0].must_equal 302
-      response[1]['Location'].must_equal '/books'
+      expect(response[0]).to eq(302)
+      expect(response[1]['Location']).to eq('/books')
     end
   end
 
   describe 'with invalid params' do
     let(:params) { Hash[book: {}] }
 
-    it 'returns HTTP client error' do
+    it 'calls interactor' do
+      expect(interactor).to receive(:call)
       response = action.call(params)
-      response[0].must_equal 422
     end
 
-    it 'dumps errors in params' do
-      action.call(params)
-      errors = action.params.errors
+    it 're-renders the books#new view' do
+      response = action.call(params)
+      expect(response[0]).to eq(422)
+    end
 
-      errors.dig(:book, :title).must_equal  ['is missing']
-      errors.dig(:book, :author).must_equal ['is missing']
+    it 'sets errors attribute accordingly' do
+      response = action.call(params)
+
+      expect(action.params.errors[:book][:title]).to eq(['is missing'])
+      expect(action.params.errors[:book][:author]).to eq(['is missing'])
     end
   end
 end
