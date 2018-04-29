@@ -5,12 +5,13 @@ class AddBook
 
     expose :book
 
-    def initialize(repository: BookRepository.new)
+    def initialize(repository: BookRepository.new, mailer: Mailers::BookAddedNotification.new)
         @repository = repository
-        #set up the object
+        @mailer = mailer        
     end
 
     def call
         @book = BookRepository.new.create(book_attributes)
+        @mailer.deliver
     end
 end
